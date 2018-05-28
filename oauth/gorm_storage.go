@@ -68,15 +68,9 @@ func (gs *GormStorage) SaveClient(client interface{}) error {
 		return err
 	}
 
-	if err = gs.db.Save(gs.client).Error; err != nil {
-		return err
-	}
-	return nil
+	return gs.db.Save(gs.client).Error
 }
 
 func (gs *GormStorage) DeleteClient() error {
-	if err := gs.db.Delete(gs.client).Error; err != nil {
-		return err
-	}
-	return nil
+	return gs.db.Delete(gs.client).Error
 }
