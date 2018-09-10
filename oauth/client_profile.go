@@ -9,18 +9,16 @@ import (
 )
 
 type ClientProfile struct {
-	Model
-	ProfileID    uuid.UUID `json:"profile_id" gorm:"type:uuid;"`
+	ID           uuid.UUID `json:"profile_id" gorm:"primary_key;type:uuid;"`
 	DisplayName  string    `json:"display_name"`
 	RoleName     string    `json:"role_name"`
-	ExpiresAt    time.Time `json:"expires_at"`
+	AccessToken  string    `json:"access_token"`
+	RefreshToken string    `json:"refresh_token"`
+	ExpiresIn    int64     `json:"expires_in"`
+	ExpiredAt    time.Time `json:"expired_at"`
+	TokenType    string    `json:"token_type"`
 	Domain       string    `json:"domain"`
 	LoginedBy    string    `json:"logined_by"`
-	AccessToken  string    `json:"access_token"`
-	RefreshToken string    `json:"token_type"`
-	ExpiresIn    int64     `json:"expires_in"`
-	TokenType    string    `json:"token_type"`
-	Scope        string    `json:"scope"`
 }
 
 type Model struct {
@@ -31,7 +29,7 @@ type Model struct {
 }
 
 func (cp *ClientProfile) GetProfileID() uuid.UUID {
-	return cp.ProfileID
+	return cp.ID
 }
 
 func (cp *ClientProfile) GetClientDisplayName() string {
@@ -51,7 +49,7 @@ func (cp *ClientProfile) GetRefreshToken() string {
 }
 
 func (cp *ClientProfile) GetExpiredAt() time.Time {
-	return cp.ExpiresAt
+	return cp.ExpiredAt
 }
 
 func (cp *ClientProfile) GetExpiresIn() int64 {
@@ -63,7 +61,7 @@ func (cp *ClientProfile) GetTokenType() string {
 }
 
 func (cp *ClientProfile) GetScope() string {
-	return cp.Scope
+	return ""
 }
 
 func (cp *ClientProfile) SetClient(client interface{}) error {
@@ -87,7 +85,7 @@ func (cp *ClientProfile) IsValid() bool {
 		return false
 	}
 	now := time.Now().Add(2 * time.Second)
-	if now.After(cp.ExpiresAt) {
+	if now.After(cp.ExpiredAt) {
 		return false
 	}
 	return true
