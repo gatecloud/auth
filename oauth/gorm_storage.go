@@ -1,9 +1,9 @@
 package oauth
 
 import (
-	"auth"
 	"strings"
 
+	"github.com/gatecloud/auth"
 	"github.com/jinzhu/gorm"
 )
 
